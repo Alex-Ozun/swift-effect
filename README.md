@@ -14,7 +14,9 @@
 	- [AsyncStreams and Effects](#async-streams-and-effects)
 	- [Deterministic testing of Unstructured Concurrency](#deterministic-testing-of-unstructured-concurrency)
 	- [Effect Scopes](#effect-scopes)
-
+- ❓[FAQ](#faq)
+	- [1. How is programming with Effects different from Dependency Injection?](#1-how-is-programming-with-effects-different-from-dependency-injection)
+  	- [2. Aren’t effects just global functions? Aren’t globals bad?]([#2-arent-effects-just-global-functions-arent-globals-bad)
 # ✨ Features
 
 - **Minimal but General**: Effects and Effect Handler form a minimal, operation-level abstraction—often representing an atomic operation such as `print`—that can be freely composed with other effectful operations to build arbitrarily complex behaviours. This contrasts with traditional DI libraries that build on object- and type-level abstractions (for example, a `ConsoleService`), which are more prone to [leaking](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) to application code, and are generally harder to compose due to their bespoke nature.
@@ -659,6 +661,85 @@ With this mechanims, we can reproduce traditional Dependency Injection patterns.
 ## More Examples
 
 You can find additional examples inside [EffectPlaygound](https://github.com/Alex-Ozun/swift-effect/tree/main/EffectPlayground)
+
+## FAQ
+### 1. How is programming with Effects different from Dependency Injection?
+
+While there are many similarities between Effects/Effect Handlers and traditional Dependency Injection,
+the differences between them have a profound effect (pun intended) on the way we model, structure, and reason about our programs.
+
+**Where the abstraction lives**
+
+**DI**: Abstractions live at the object and type level. You pass around concrete objects (e.g. `APIService`) within your code. Your programs directly call methods on these objects and interact with their state. While injected objects usually sit behind an interface (e.g. a protocol or a struct with closures), these object-/type-level abstractions often leak implementation details by strongly implying specific expected behavior. Such interfaces often serve merely as test-only scaffolding to allow injection of mocks, which themselves tend to become over-specified in order to satisfy the implied behaviour. This, of course, is not an inherent issue with DI, and with sufficient engineering discipline, traditional DI can avoid all these problems.
+
+**Effects**: Abstractions live at the operation level. Programs are built around abstract operations such as `Console.print`, `Logging.log`, `HTTP.data(for: url)`, `UI.fontSize`, etc. While these operations are namespaced by the domains they belong to, there is no implied behaviour or stateful relationship between individual operations unless such relationships are expressed explicitly via shared input/output data, for example `AudioRecording.start(fileURL: fileURL); AudioRecording.stop(fileURL: fileURL)`.
+At this more granular level of abstraction, programmers are incentivised to model behaviour more generically, with operations and their relationships expressed explicitly through data flow. This leads to more procedural, portable, and composable code that can be recombined under different Effect Handler interpretations.
+
+**Composability**:
+
+**DI:** Mixing and customising the behaviour of multiple objects, types, or services often requires creating bespoke object hierarchies. For example, extending `APIService` with custom caching behaviour typically involves introducing a higher-level coordinator such as `CachedAPIService`, which combines the behaviour of wrapped services in an ad hoc manner.
+
+**Effects**: Multiple effect handlers for the same effect can be installed on the same call stack and can extend each other in a generic way, without the need for direct coordination. For example, extending the `HTTP.data(for: URL)` effect with custom caching behaviour can be achieved by installing multiple independent HTTP effect handlers, each intercepting and augmenting the operation as needed.
+
+```swift
+func main() {
+  with {
+    HTTP.Data { url in
+      ... URL session
+    }
+  } perform: {
+    module()
+  }
+}
+func module() {
+  let localCache = ...
+  with {
+    HTTP.Data { url in
+      if let data = localCache(url) {
+        return data // return cached data immediately
+      } else {
+        let data = await HTTP.data(for: url) // yield to next handler
+        localCache.set(data, url) // update cache
+        return data
+      }
+    }
+  } perform: {
+    program()
+  }
+}
+func program() {
+  let data = await HTTP.data(for: url)
+}
+```
+In this example, neither the program nor any of the effect handlers are aware of each other’s existence, and any handler can be added or removed at will, thereby changing the caching policy without modifying any other part of the program.
+
+**Testing**:
+
+**DI**: You define and configure test doubles, such as mocks and stubs, ahead of time and inject them into the system under test in order to exercise logic in isolation from concrete dependency implementations.
+
+**Effects**: You directly intercept, inspect, and resume individual observable **effectful** operations as they are performed by the system under test, exercising logic by interpreting that behaviour in the context of a given step within the test.
+
+### 2. Aren’t effects just global functions? Aren’t globals bad?
+Yes and no. Effects are indeed modelled as global functions, but they are **namespaced**, **scoped**, **thread-safe**, and **dynamically bound** global functions.
+
+**Namespaced**
+
+All effects are namespaced by the domain they belong to. This minimises name collisions with other global systems, particularly system-provided ones.
+
+**Scoped**
+
+Each effect’s behaviour is scoped to the effect handlers installed in the call-stack hierarchy at the point where the effect is performed.
+
+**Thread-safe**
+
+Effect handler scopes are thread-safe and cannot escape into unrelated execution contexts. This invariant is guaranteed by the underlying TaskLocal mechanism to which effect handlers are bound.
+
+**Dynamically bound**
+
+When an effect is performed, its behaviour is resolved dynamically at runtime by matching it to the nearest applicable effect handler in the thread-safe scope stack.
+Together, these mechanisms eliminate most of the problems traditionally associated with globals, such as implicit shared mutable state, lack of composability, and inability to customise or extend behaviour safely.
+
+It is still possible to violate these invariants by using unsafe global state behind effect implementations. However, this is a universal risk in impure programming and applies equally to dependency injection, effects, or any other architectural pattern in an inherently impure language such as Swift.
 
 ## Similar projects
 - [Probing](https://github.com/NSFatalError/Probing) is a cool library with similar goals that provides "programmable breakpoints" that enable powerful testing of complex Swift Concurrency workflows and stateful programs.
