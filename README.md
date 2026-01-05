@@ -3,7 +3,7 @@
 
 [![](https://img.shields.io/badge/preview-not_ready_for_production-F94444)](https://github.com/Alex-Ozun/swift-effect/releases)
 
-**Swift Effect** is an architecture-agnostic effect system that makes side effects—such as I/O, networking, randomness, concurrency—controllable, composable, and testable without forcing structural changes to your application code. With just two lightweight abstractions—**Effects** and **Effect Handlers**—it enables natural composition of behaviours while keeping application code linear, procedural, and easy to reason about. In tests, the same mechanism powers mock-less testing of behaviours: observable effects can be intercepted, suspended, and resumed with just-in-time test data, without invasive scaffolding or test-only abstractions in application code, commonly required by traditional DI libraries and architectural frameworks.
+**Swift Effect** is an architecture-agnostic effect system that makes side effects (such as I/O, networking, randomness, concurrency) controllable, composable, and testable without forcing structural changes to your application code. With just two lightweight abstractions, **Effects** and **Effect Handlers**, it enables natural composition of behaviours while keeping application code linear, procedural, and easy to reason about. In tests, the same mechanism powers mock-less testing of behaviours: observable effects can be intercepted, suspended, and resumed with just-in-time test data, without invasive scaffolding or test-only abstractions in application code, commonly required by traditional DI libraries and architectural frameworks.
 
 🔗 Jump to:
 - ✨ [Features](#-features)
@@ -22,11 +22,11 @@
  
 # ✨ Features
 
-- **Minimal but General**: Effects and Effect Handler form a minimal, operation-level abstraction—often representing an atomic operation such as `print`—that can be freely composed with other effectful operations to build arbitrarily complex behaviours. This contrasts with traditional DI libraries that build on object- and type-level abstractions (for example, a `ConsoleService`), which are more prone to [leaking](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) to application code, and are generally harder to compose due to their bespoke nature.
+- **Minimal but General**: Effects and Effect Handler form a minimal, operation-level abstraction (often representing an atomic operation such as `print`) that can be freely composed with other effectful operations to build arbitrarily complex behaviours. This contrasts with traditional DI libraries that build on object- and type-level abstractions (for example, a `ConsoleService`), which are more prone to [leaking](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) to application code, and are generally harder to compose due to their bespoke nature.
 - **Composable**: Effect Handlers can be nested in the same way as `do–try–catch` exception handlers, placed anywhere in the stack hierarchy, enabling natural and intuitive composition of behaviours. This allows to separate application logic from specific behaviours, making programs modular, extensible, and portable.
 - **Modular**: Effects and Effect Handlers are just normal functions. This allows application code that performs Effects to remain completely decoupled from Effect Handlers that provide their behavior. Effects can be defined in one module and handled in another, and multiple Effect Handlers for the same Effect can be supplied by different modules as needed.
 - **Testable**: The library provides a `TestHandler`, a special Effect Handler that can intercept, suspend, inspect, and resume any Effects performed by the system under test. This enables a powerful testing style in which application code can be executed step by step, allowing tests to assert and interpret **observable behaviour and state** without ahead-of-time mocking, much like a human tester would by running the program and manually inputting data as it is needed.
-- **Deterministic Concurrency**: The library enables deterministic testing of Swift Concurrency primitives—such as Tasks, Task Groups (WIP), and Async Streams—by modelling them as controllable effects in their own right.
+- **Deterministic Concurrency**: The library enables deterministic testing of Swift Concurrency primitives (such as Tasks, Task Groups (WIP), and Async Streams) by modelling them as controllable effects in their own right.
 - **Research-based**: The library is informed by extensive [theory and practice](https://github.com/yallop/effects-bibliography) around computational effects. **Swift Effect**'s design is primarily inspired by the established effect systems in [OCaml](https://ocaml.org/manual/5.4/effects.html) and [Koka](https://koka-lang.github.io/koka/doc/book.html#why-effects).
 
 # 📖 Examples
@@ -52,7 +52,7 @@ Good Bye
 exit
 ```
 
-This deceptively simple program performs two unmanaged I/O side effects—`readLine` and `print`—making it practically impossible to test or extend with custom behaviours.
+This deceptively simple program performs two unmanaged I/O side effects,`readLine` and `print`, making it practically impossible to test or extend with custom behaviours.
 
 Let's turn `readLine` and `print` operations into controllable Effects:
 
@@ -264,6 +264,8 @@ try await effect.expect(\.Console.print) { #expect($0 == "Hello") }
 ## Effect composition in Tests
 
 What happens if we compose `withTestHandler` with another effect handler inside? 
+ ,
+,
 
 ```swift
 @Test
@@ -313,7 +315,7 @@ func test() async throws {
 }
 ```
 
-In this test, we only care about testing `"Hello"` prints and ignore everything else. This pattern is useful when a program produces many irrelevant effects—for example, a large number of `Logging.log(.debug, ...)` effects. In such cases, we can filter out all log effects except those with `LogLevel.error`.
+In this test, we only care about testing `"Hello"` prints and ignore everything else. This pattern is useful when a program produces many irrelevant effects, for example, a large number of `Logging.log(.debug, ...)` effects. In such cases, we can filter out all log effects except those with `LogLevel.error`.
 
 
 ### Opt-out testing pattern with outer handlers
@@ -750,7 +752,7 @@ Please share your feedback, questions, and ideas in [Discussions](https://github
 
 ## Similar projects
 - [Probing](https://github.com/NSFatalError/Probing) is a cool library with similar goals that provides "programmable breakpoints" that enable powerful testing of complex Swift Concurrency workflows and stateful programs.
-- [swift-dependencies](https://github.com/pointfreeco/swift-dependencies) While more focused on traditional dependency injection approaches, this library makes heavy use of `TaskLocal`s for installing dependencies into scopes, which makes it closely related to this project—and indeed a significant source of inspiration.
+- [swift-dependencies](https://github.com/pointfreeco/swift-dependencies) While more focused on traditional dependency injection approaches, this library makes heavy use of `TaskLocal`s for installing dependencies into scopes, which makes it closely related to this project, and indeed a significant source of inspiration.
 - [swift-composable-architecture](https://github.com/pointfreeco/swift-composable-architecture) The most widely adopted architectural framework that ships with a first-class effect system out of the box. While incredibly powerful for effect control and testing, it unfortunately requires a fundamental restructuring of otherwise “normal” procedural programs into a unidirectional data-flow model. Which is one of the key problems this project aims to solve.
 
 ### Author
