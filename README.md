@@ -1,5 +1,5 @@
 <h1 align="center">Swift Effect</h1>
-<h4 align="center">Algebraics Effect and Effect Handlers for Swift</h4>
+<h4 align="center">Algebraic Effects and Effect Handlers for Swift</h4>
 
 [![](https://img.shields.io/badge/preview-not_ready_for_production-F94444)](https://github.com/Alex-Ozun/swift-effect/releases)
 
