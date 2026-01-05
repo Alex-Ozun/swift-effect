@@ -328,7 +328,7 @@ func test() async throws {
   with {                        // outer handler
     Print { _ in } // no-op stub
   } perform: {
-    try await withTestHandler { // outer handler
+    try await withTestHandler { // inner handler
       echo()                                                  
     } test: { effect in                                         
 		try await effect.expect(\.Console.readLine, return: "Hello")
