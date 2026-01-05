@@ -82,7 +82,7 @@ func echo() {
 }
 ```
 
-Notice that we didn't have to change the structure, control flow, or the interface of `echo`. It remains linear and procedural.
+Notice that we didn't have to change the structure, control flow, or the interface of `echo`. It remains linear and procedural (*in stark contrast to other effect systems that require restrucuring programs into unidirectional data flow or use monadic chaining*).
 
 If we run `echo` again, it will work the exact same way as before. `Console.readLine` and `Console.print` operations will be handled by the global Effect Handlers, which simply call the implementations of the two static functions we defined above. This on itself is unremarkable.
 
