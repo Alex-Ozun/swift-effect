@@ -18,6 +18,8 @@
 - ❓[FAQ](#faq)
 	- [1. How is programming with Effects different from Dependency Injection?](#1-how-is-programming-with-effects-different-from-dependency-injection)
   	- [2. Aren’t effects just global functions? Aren’t globals bad?]([#2-arent-effects-just-global-functions-arent-globals-bad)
+- 📝 [Share your Feedback](#-share-your-feedback)
+ 
 # ✨ Features
 
 - **Minimal but General**: Effects and Effect Handler form a minimal, operation-level abstraction—often representing an atomic operation such as `print`—that can be freely composed with other effectful operations to build arbitrarily complex behaviours. This contrasts with traditional DI libraries that build on object- and type-level abstractions (for example, a `ConsoleService`), which are more prone to [leaking](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/) to application code, and are generally harder to compose due to their bespoke nature.
@@ -741,6 +743,10 @@ When an effect is performed, its behaviour is resolved dynamically at runtime by
 Together, these mechanisms eliminate most of the problems traditionally associated with globals, such as implicit shared mutable state, lack of composability, and inability to customise or extend behaviour safely.
 
 It is still possible to violate these invariants by using unsafe global state behind effect implementations. However, this is a universal risk in impure programming and applies equally to dependency injection, effects, or any other architectural pattern in an inherently impure language such as Swift.
+
+## 📝 Share your Feedback
+
+Please share your feedback, questions, and ideas in [Discussions](https://github.com/Alex-Ozun/swift-effect/discussions/1)
 
 ## Similar projects
 - [Probing](https://github.com/NSFatalError/Probing) is a cool library with similar goals that provides "programmable breakpoints" that enable powerful testing of complex Swift Concurrency workflows and stateful programs.
