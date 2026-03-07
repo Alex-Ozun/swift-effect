@@ -24,6 +24,7 @@ let package = Package(
     .package(url: "https://github.com/pointfreeco/swift-macro-testing.git", exact: "0.6.4"),
     .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "1.8.0"),
     .package(url: "https://github.com/groue/Semaphore", exact: "0.1.0"),
+    .package(url: "https://github.com/pointfreeco/swift-concurrency-extras", from: "1.2.0"),
   ],
   targets: [
     .testTarget(
@@ -40,6 +41,7 @@ let package = Package(
       name: "EffectTests",
       dependencies: [
         "Effect",
+        .product(name: "ConcurrencyExtras", package: "swift-concurrency-extras"),
       ],
       path: "Tests/EffectTests",
       swiftSettings: [.enableUpcomingFeature("NonisolatedNonsendingByDefault")],
@@ -65,3 +67,4 @@ let package = Package(
   ],
   swiftLanguageModes: [.v6],
 )
+

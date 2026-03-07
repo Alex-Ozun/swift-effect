@@ -17,7 +17,7 @@ private struct State {
 struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   @Test
   func waitsForBothToFinishWhenOperationFinishesFirst() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.1))
@@ -37,7 +37,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func waitsForBothToFinishWhenTestFinishesFirst() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.2))
@@ -57,7 +57,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func rethrowImmediatelyWhenOperationThrowsBeforeTestFinishes() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.1))
@@ -78,7 +78,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func rethrowWhenOperationThrowsAfterTestFinishes() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.2))
@@ -99,7 +99,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func rethrowImmediatelyWhenTestThrowsBeforeOperationFinishes() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.2))
@@ -121,7 +121,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func rethrowWhenTestThrowsAfterOperationFinishes() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.1))
@@ -143,7 +143,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func rethrowImmediatelyWhenTestThrowsBeforeOperationThrows() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.2))
@@ -165,7 +165,7 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
   
   @Test
   func rethrowImmediatelyWhenOperationThrowsBeforeTestThrows() async throws {
-    let state = LockIsolated(State())
+    let state = ConcurrencyExtras.LockIsolated(State())
     func operation() async throws -> Int {
       defer { state.withValue { $0.events.append(.operationFinished) } }
       try await Task.sleep(for: .seconds(0.1))
@@ -185,3 +185,4 @@ struct RunInParallelUntilBothCompleteOrEitherThrowsTests {
     #expect(state.events == [.operationFinished])
   }
 }
+
