@@ -274,7 +274,7 @@ public final class EffectTest: Sendable {
     }
     switch action {
     case .enqueue:
-      await task.enqueue()
+      task.enqueue()
     case .suspend: break
     }
     await task.resume()
