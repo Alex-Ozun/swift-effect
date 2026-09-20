@@ -78,6 +78,13 @@ public func with<T>(
   try with(handlers(), perform: perform)
 }
 
+public func perform<T>(
+  _ perform: () throws -> T,
+  @SyncEffectHandlersBuilder with handlers: () -> [any SyncEffectHandler]
+) rethrows -> T {
+  try with(handlers(), perform: perform)
+}
+
 @resultBuilder
 public enum EffectHandlersBuilder {
   public static func buildBlock(_ components: [any EffectHandler]...) -> [any EffectHandler] {
