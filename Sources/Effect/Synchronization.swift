@@ -75,16 +75,8 @@ struct SendableConsumeOnceBox<Wrapped>: ~Copyable {
   
   @inlinable
   mutating func take() -> sending Wrapped {
-    return self.wrapped.take()!
-  }
-}
-
-extension Optional where Wrapped: ~Copyable {
-  @usableFromInline
-  mutating func take() -> sending Self {
-    let result = consume self
-    self = nil
-    return result
+    nonisolated(unsafe) let value = self.wrapped.take()!
+    return value
   }
 }
 
