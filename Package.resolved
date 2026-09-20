@@ -1,5 +1,5 @@
 {
-  "originHash" : "aa483f8fd5df7d0feb19c6d12b1695b62d306bcd81db1b52adf38c382331ee84",
+  "originHash" : "c0ff59c5e878d944c0a454ca138bb97ae3c3c5796d69734bcec89ad6e839e7c6",
   "pins" : [
     {
       "identity" : "semaphore",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "2543679282aa6f6c8ecf2138acd613ed20790bc2",
         "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "swift-concurrency-extras",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-concurrency-extras",
+      "state" : {
+        "revision" : "5fa253428866f2360c3754e88537f700ed2656b5",
+        "version" : "1.4.1"
       }
     },
     {
